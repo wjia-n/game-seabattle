@@ -310,9 +310,7 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
                       ? null
                       : () {
                           widget.audio.click();
-                          e.placingShipIndex = i;
-                          // ignore: invalid_use_of_protected_member
-                          e.notifyListeners();
+                          e.selectPlacingShip(i);
                         },
                   child: Opacity(
                     opacity: placed ? 0.35 : 1.0,
@@ -413,7 +411,7 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
           padding: const EdgeInsets.fromLTRB(12, 6, 12, 2),
           child: Row(
             children: [
-              Icon(Icons.crosshair, color: t.brassLight, size: 16),
+              Icon(Icons.gps_fixed, color: t.brassLight, size: 16),
               const SizedBox(width: 6),
               Text('Enemy waters — tap a square to fire',
                   style: Nautical.body(12, theme: t)),

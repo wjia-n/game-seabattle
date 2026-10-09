@@ -88,6 +88,12 @@ class SeaBattleEngine extends ChangeNotifier {
   bool placingHorizontal = true;
   String? placementError;
 
+  /// Select which ship the placer is placing, then refresh listeners.
+  void selectPlacingShip(int i) {
+    placingShipIndex = i;
+    notifyListeners();
+  }
+
   ShotAnim? shotAnim;
   String banner = '';
   bool over = false;
@@ -456,7 +462,6 @@ class SeaBattleEngine extends ChangeNotifier {
 
   void _afterReveal() {
     if (over || phase != BattlePhase.revealing || shotAnim == null) return;
-    final atk = shotAnim!.attacker;
     final wasHit = shotAnim!.result != ShotResult.miss;
     shotAnim = null;
     if (wasHit) {

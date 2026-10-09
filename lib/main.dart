@@ -1,23 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:wajiha_game_core/wajiha_game_core.dart';
-import 'game_screen.dart';
+import 'package:flutter/services.dart';
+import 'screens/splash_screen.dart';
+import 'services/audio_service.dart';
+import 'services/settings_service.dart';
 
-void main() => runApp(const SeaBattleApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  final settings = SeaSettings();
+  await settings.load();
+  final audio = SeaAudio();
+  audio.configure(
+    musicOn: settings.musicOn,
+    sfxOn: settings.sfxOn,
+    volume: settings.volume,
+  );
+  runApp(SeaBattleApp(settings: settings, audio: audio));
+}
 
-class SeaBattleApp extends StatelessWidget {
-  const SeaBattleApp({super.key});
+class SeaBattleApp extends StatefulWidget {
+  final SeaSettings settings;
+  final SeaAudio audio;
+  const SeaBattleApp({super.key, required this.settings, required this.audio});
+
+  @override
+  State<SeaBattleApp> createState() => _SeaBattleAppState();
+}
+
+class _SeaBattleAppState extends State<SeaBattleApp>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    widget.audio.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Pause (not stop) on interruption so music resumes exactly where it
+    // left off; game screens additionally freeze their engines.
+    if (state == AppLifecycleState.paused) {
+      widget.audio.onAppPaused();
+    } else if (state == AppLifecycleState.resumed) {
+      widget.audio.onAppResumed();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GameShell(
-      variant: ShellVariant.neonArcade,
+    return MaterialApp(
       title: 'Sea Battle',
-      tagline: 'Sink the hidden fleet before yours goes down!',
-      emoji: '🚢',
-      slug: 'seabattle',
-      howToPlay: '• Shuffle your fleet until you love it, then start\n• Tap the enemy waters to fire a salvo\n• 💥 = hit, 🌊 = miss — sink all 5 ships to win\n• Watch out: the enemy admiral hunts smart',
-      playerOptions: const [1, 2],
-      supportsBots: true,
-      gameBuilder: (ctx, players, cb) => SeaBattleScreen(players: players, callbacks: cb),
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(audio: widget.audio, settings: widget.settings),
     );
   }
 }

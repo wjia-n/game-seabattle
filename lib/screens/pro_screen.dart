@@ -34,13 +34,7 @@ class _ProScreenState extends State<ProScreen> {
     });
   }
 
-  void _onPro() {
-    if (_store.proPurchased.value) {
-      widget.settings.setPro(true);
-      if (mounted) setState(() {});
-    }
-  }
-
+  
   @override
   void dispose() {
     _store.proPurchased.removeListener(_onPro);

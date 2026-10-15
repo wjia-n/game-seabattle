@@ -367,7 +367,7 @@ class ShipCellPainter extends CustomPainter {
         sailPath.close();
         canvas.drawPath(sailPath, sailP);
         if (style == 2) {
-          // Viking stripes.
+          // Warrior stripes.
           canvas.drawLine(Offset(mx - sailW / 4, h * 0.12),
               Offset(mx - sailW / 4, h * 0.40), trimP..strokeWidth = 2);
           canvas.drawLine(Offset(mx + sailW / 4, h * 0.12),

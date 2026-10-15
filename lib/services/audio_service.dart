@@ -16,6 +16,9 @@ import 'package:audioplayers/audioplayers.dart';
 ///   resumes exactly where it left off instead of restarting or dying.
 /// - Every public method catches player errors; audio can never crash the app.
 class SeaAudio {
+  /// Per-game pitch character (seabattle): 0.89x. Makes SFX unique.
+  static const double _pitchMul = 0.890;
+
   static const int _rate = 22050;
   final AudioPlayer _sfx = AudioPlayer();
   final AudioPlayer _music = AudioPlayer();
@@ -97,6 +100,8 @@ class SeaAudio {
 
   List<double> _tone(double freq, double secs,
       {double freqEnd = 0, double attack = 0.02, double harmonics = 0.25}) {
+    freq *= _pitchMul;
+    freqEnd *= _pitchMul;
     final n = (_rate * secs).round();
     final out = List<double>.filled(n, 0);
     for (int i = 0; i < n; i++) {
@@ -208,12 +213,12 @@ class SeaAudio {
       _cache.putIfAbsent(key, () => _wav(build()));
 
   Uint8List _menuBytes() => _clip('music_menu', () {
-        // Rolling sea-shanty pads: Dm – Bb – F – C, 16s loop.
+        // A# 0 – 5 – 4 – 3 warm pad, 16s loop. Unique to seabattle.
         final seq = [
-          [146.83, 174.61, 220.0], // Dm
-          [116.54, 146.83, 174.61], // Bb
-          [174.61, 220.0, 261.63], // F
-          [130.81, 164.81, 196.0], // C
+          [233.08, 293.66, 349.23],
+          [391.99, 466.16, 587.32],
+          [349.23, 440.00, 523.25],
+          [311.12, 391.99, 466.16]
         ];
         final out = <double>[];
         for (final chord in seq) {
@@ -222,21 +227,25 @@ class SeaAudio {
         return out;
       });
 
+
   Uint8List _gameBytes() => _clip('music_game', () {
-        // Adventurous horn-like calls over a deep-sea drone, 12s loop.
-        final drone = _padChord([98.0, 146.83], 12.0);
-        final calls = [293.66, 329.63, 392.0, 440.0, 392.0, 329.63, 293.66, 261.63];
-        final n = (_rate * 12).round();
-        final out = List<double>.from(drone);
-        for (int k = 0; k < calls.length; k++) {
-          final start = (n * k / calls.length).round();
-          final tone = _tone(calls[k], 0.55, harmonics: 0.4);
-          for (int i = 0; i < tone.length && start + i < n; i++) {
-            out[start + i] += tone[i] * 0.32;
-          }
+        // A# arpeggiated 0 – 5 – 4 – 3, 16s loop. Unique to seabattle.
+        final notes = [233.08, 293.66, 349.23, 293.66, 391.99, 466.16, 587.32, 466.16, 349.23, 440.00, 523.25, 440.00, 311.12, 391.99, 466.16, 391.99];
+        final out = <double>[];
+        final noteLen = 16.0 / notes.length;
+        for (final n in notes) {
+          out.addAll(_tone(n, noteLen * 0.9, harmonics: 0.3));
+          final gap = List<double>.filled((_rate * noteLen * 0.1).round(), 0);
+          out.addAll(gap);
+        }
+        // Soft pad underneath
+        final pad = _padChord([233.08, 293.66, 349.23], 16.0);
+        for (int i = 0; i < out.length && i < pad.length; i++) {
+          out[i] += pad[i] * 0.3;
         }
         return out;
       });
+
 
   // ------------------------------------------------------------------ SFX
   Future<void> _play(Uint8List bytes) async {

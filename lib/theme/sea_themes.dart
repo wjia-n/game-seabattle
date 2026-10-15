@@ -167,7 +167,7 @@ class SeaThemes {
     ),
     SeaThemeDef(
       id: 'arctic',
-      name: 'Arctic Voyage',
+      name: 'Frozen Voyage',
       woodDark: Color(0xFF3A2E22),
       woodMid: Color(0xFF63503C),
       brass: Color(0xFFC0C6D4),
@@ -285,7 +285,7 @@ class ShipStyles {
   static const List<String> names = [
     'Oak Galleon', // 0 free
     'Ironclad', // 1 free
-    'Viking Longship', // 2 free
+    'Dragon Longship', // 2 free
     'Pirate Brig', // 3 pro
     'Steam Frigate', // 4 pro
     'Royal Man-o-War', // 5 pro
@@ -312,7 +312,7 @@ class ShipStyles {
       trim: Color(0xFFD95F2B),
     ),
     ShipStyleDef(
-      name: 'Viking Longship',
+      name: 'Dragon Longship',
       hull: Color(0xFF6E3B1F),
       hullDark: Color(0xFF472512),
       sail: Color(0xFFC0392B),

@@ -177,50 +177,6 @@ class _ProScreenState extends State<ProScreen> {
               style: Nautical.ink(12, theme: t)
                   .copyWith(color: t.ink.withValues(alpha: 0.7)),
             ),
-          ] else ...[
-            Text('Unlock PRO forever',
-                style: Nautical.ink(17, theme: t)
-                    .copyWith(fontWeight: FontWeight.w800)),
-            const SizedBox(height: 6),
-            if (_store.proProduct != null)
-              Text(_store.proProduct!.price,
-                  style: Nautical.ink(22, theme: t)
-                      .copyWith(fontWeight: FontWeight.w900)),
-            const SizedBox(height: 10),
-            ValueListenableBuilder<bool>(
-              valueListenable: _store.purchaseInProgress,
-              builder: (_, busy, __) => BrassButton(
-                label: busy ? 'Working…' : 'BECOME PRO',
-                icon: Icons.workspace_premium,
-                theme: t,
-                primary: true,
-                onTap: busy ? null : () => _store.buyPro(),
-              ),
-            ),
-            ValueListenableBuilder<String?>(
-              valueListenable: _store.purchaseError,
-              builder: (_, err, __) => err == null
-                  ? const SizedBox.shrink()
-                  : Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(err,
-                          style: TextStyle(
-                              color: t.hitGlow,
-                              fontWeight: FontWeight.w700)),
-                    ),
-            ),
-            const SizedBox(height: 6),
-            TextButton(
-              onPressed: () {
-                widget.audio.click();
-                _store.restore();
-              },
-              child: Text('Restore purchases',
-                  style: TextStyle(
-                      color: t.brass,
-                      fontWeight: FontWeight.w700,
-                      decoration: TextDecoration.underline)),
-            ),
           ],
           ValueListenableBuilder<String?>(
             valueListenable: _store.lastThanks,

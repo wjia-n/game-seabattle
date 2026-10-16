@@ -7,6 +7,7 @@ import '../theme/nautical.dart';
 import '../theme/sea_themes.dart';
 import 'menu_screen.dart' show storeUrl;
 import 'pro_screen.dart';
+import '../transfer/transfer_ui.dart';
 
 /// Settings: audio, stats, share/rate, Pro shortcut.
 class SettingsScreen extends StatelessWidget {
@@ -29,6 +30,7 @@ class SettingsScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(18),
             children: [
+              TransferSaveTile(gameSlug: 'seabattle'),
               Row(
                 children: [
                   IconButton(

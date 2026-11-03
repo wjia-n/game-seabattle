@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../engine/seabattle_engine.dart';
 import '../services/audio_service.dart';
@@ -127,7 +128,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   }),
                   const SizedBox(width: 8),
                   _iconBtn(
-                    s.isPro ? Icons.workspace_premium : Icons.lock_outline,
+                    defaultTargetPlatform == TargetPlatform.iOS ? Icons.star : (s.isPro ? Icons.workspace_premium : Icons.lock_outline),
                     () {
                       audio.click();
                       Navigator.of(context).push(
@@ -185,9 +186,11 @@ class _MenuScreenState extends State<MenuScreen> {
               const SizedBox(height: 10),
               Center(
                 child: Text(
-                  s.isPro
-                      ? 'PRO admiral — fair winds!'
-                      : 'Free version — unlock PRO for more seas & ships',
+                  defaultTargetPlatform == TargetPlatform.iOS
+                      ? 'Fair winds!'
+                      : (s.isPro
+                          ? 'PRO admiral — fair winds!'
+                          : 'Free version — unlock PRO for more seas & ships'),
                   style: Nautical.body(12, theme: t).copyWith(
                     color: t.parchment.withValues(alpha: 0.75),
                   ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
@@ -119,8 +120,8 @@ class SettingsScreen extends StatelessWidget {
                         style: Nautical.label(12, theme: t)
                             .copyWith(color: t.ink.withValues(alpha: 0.7))),
                     const SizedBox(height: 8),
-                    _rowBtn(t, Icons.workspace_premium,
-                        settings.isPro ? 'Sea Battle PRO ✓' : 'Get Sea Battle PRO',
+                    _rowBtn(t, defaultTargetPlatform == TargetPlatform.iOS ? Icons.star : Icons.workspace_premium,
+                        defaultTargetPlatform == TargetPlatform.iOS ? '⭐ Gold Star' : (settings.isPro ? 'Sea Battle PRO ✓' : 'Get Sea Battle PRO'),
                         () {
                       audio.click();
                       Navigator.of(context).push(
